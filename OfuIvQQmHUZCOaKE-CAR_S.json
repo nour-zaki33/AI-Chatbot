@@ -1,0 +1,770 @@
+{
+  "name": "CAR,S",
+  "nodes": [
+    {
+      "parameters": {
+        "formTitle": "ZAKI FOR CARS ",
+        "formDescription": "Thank you for choosing ZAKI FOR CARS.\nFill out the form and one of our consultants will get back to you shortly.",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "Gmail",
+              "fieldType": "email",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "your name",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Phone Number",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Request Type",
+              "fieldType": "dropdown",
+              "fieldOptions": {
+                "values": [
+                  {
+                    "option": "Buy "
+                  },
+                  {
+                    "option": "Trade-in"
+                  },
+                  {
+                    "option": "Rent "
+                  }
+                ]
+              },
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Preferred Car Type",
+              "fieldType": "dropdown",
+              "fieldOptions": {
+                "values": [
+                  {
+                    "option": "Sedan"
+                  },
+                  {
+                    "option": "SUV"
+                  },
+                  {
+                    "option": "Hatchback"
+                  }
+                ]
+              }
+            },
+            {
+              "fieldLabel": "Budget Range:",
+              "fieldType": "dropdown",
+              "fieldOptions": {
+                "values": [
+                  {
+                    "option": "Under 500,000"
+                  },
+                  {
+                    "option": "500,000 - 800,000"
+                  },
+                  {
+                    "option": "800,000 - 1,200,000"
+                  },
+                  {
+                    "option": "Above 1,200,000"
+                  }
+                ]
+              },
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Additional Notes"
+            },
+            {
+              "fieldLabel": "Preferred Contact",
+              "fieldType": "dropdown",
+              "fieldOptions": {
+                "values": [
+                  {
+                    "option": "WhatsApp"
+                  },
+                  {
+                    "option": "Email"
+                  },
+                  {
+                    "option": "Phone Call"
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.formTrigger",
+      "typeVersion": 2.6,
+      "position": [
+        -304,
+        -192
+      ],
+      "id": "da5b049c-6a46-47f5-84c7-2fe6ca6c7d0b",
+      "name": "On form submission",
+      "webhookId": "fbd07171-0ac0-43f5-bc5e-2f53bff5dda5"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "e243f407-3232-4136-ba25-4afdd3593b46",
+              "name": "Gmail",
+              "value": "={{ $json.Gmail }}",
+              "type": "string"
+            },
+            {
+              "id": "d82ce2e4-9a02-4ec7-a6e6-adae1c6c8d30",
+              "name": "your name",
+              "value": "={{ $json['your name'] }}",
+              "type": "string"
+            },
+            {
+              "id": "c3705a10-ea33-4f30-84a3-1ab5e49862d8",
+              "name": "Phone Number",
+              "value": "={{ $json['Phone Number'] }}",
+              "type": "string"
+            },
+            {
+              "id": "8727704f-bd05-409c-81ff-26d8077e9d9a",
+              "name": "Request Type",
+              "value": "={{ $json['Request Type'] }}",
+              "type": "string"
+            },
+            {
+              "id": "da5f6ea3-dc12-46c6-abba-965434a43a84",
+              "name": "Preferred Car Type",
+              "value": "={{ $json['Preferred Car Type'] }}",
+              "type": "string"
+            },
+            {
+              "id": "806c3bf7-3b0e-4199-8dd8-c74736621684",
+              "name": "Additional Notes",
+              "value": "={{ $json['Additional Notes'] }}",
+              "type": "string"
+            },
+            {
+              "id": "7b01d0df-7dd1-4734-bef0-38bceaee9aa6",
+              "name": "Preferred Contact ",
+              "value": "={{ $json['Preferred Contact'] }}",
+              "type": "string"
+            },
+            {
+              "id": "73b291c9-c904-451b-975f-2c1bba5415e6",
+              "name": "Budget Range:",
+              "value": "={{ $json['Budget Range:'] }}",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {
+          "dotNotation": true
+        }
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        128,
+        -192
+      ],
+      "id": "28771f0f-2ed4-4b10-8866-25db4010f103",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Analyze the following customer request from ZAKI FOR CARS and return a structured response.\n\nCustomer Data:\n- Full Name: {{ $json['your name'] }}\n- Phone: {{ $json['Phone Number'] }}\n- Email: {{ $json.Gmail }}\n- Preferred Contact Method: {{ $json['Preferred Contact '] }}\n- Request Type: {{ $json['Request Type'] }}\n- Preferred Car Type: {{ $json['Preferred Car Type'] }}\n- Budget Range: {{ $json['Budget Range:'] }}\n- Additional Notes: {{ $json['Additional Notes'] }}\n\n\n  - Below 500,000 or not specified → +10 points\n- Request Type = \"Buy\" → +25 points, otherwise +10\n- Preferred Car Type is specific → +15 points, otherwise +5\n- Additional Notes are clear and serious → +10 points, otherwise +0\n- Email + Phone available → +10 points\n\nLead Category:\n- Premium: 80-100\n- Standard: 50-79\n- Basic: 0-49\n\nMessaging Requirement:\n- Inside \"customer_message\", draft a highly professional, polite, and well-structured confirmation message in ENGLISH using line breaks and emojis.\n- Greet the customer by name, acknowledge their car request and budget range, and mention the next step clearly.\n- Naturally introduce the Telegram bot link with a call-to-action phrase (e.g., \"For instant support or to track your request, you can connect with our Telegram AI assistant here: https://t.me/CAR340_bot\").\n\nReturn exactly this JSON structure:\n\n{\n  \"leadScore\": 0,\n  \"leadCategory\": \"Premium | Standard | Basic\",\n  \"priority\": \"High | Medium | Low\",\n  \"buyingIntent\": \"High | Medium | Low\",\n  \"summary\": \"Short summary of the request (max 2 sentences)\",\n  \"next_action\": \"Specific next action for the sales team\",\n  \"customer_message\": \"Professional formatted English message with line breaks and Telegram link\"\n}",
+        "options": {
+          "systemMessage": "You are a professional and courteous Sales Assistant representing ZAKI FOR CARS.\n\nYour job is to analyze customer form data and return a structured JSON response only.\n\nRules:\n- Use only the information provided in the customer data.\n- Do not invent missing information.\n- Return only valid JSON. No markdown, no explanations, no extra text.\n- The customer_message must be professional, friendly, and concise.\n- Do not mention lead quality, score, or priority in the customer_message.\n- Do not make promises about price, availability, discounts, or delivery."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        432,
+        -192
+      ],
+      "id": "c6362e99-6250-40f8-9240-3435c618457e",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-2.5-flash",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1.1,
+      "position": [
+        368,
+        -32
+      ],
+      "id": "d5ec83d7-f968-4993-bf6a-d2d89a0b67ce",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "hTytwTiAjdmZlEkf",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $('On form submission').item.json['Preferred Contact'] }}",
+                    "rightValue": "WhatsApp",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "2b7d4002-7e95-4253-90b4-8f91c9d0cc6f"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "WhatsApp"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "6b4cda19-a2e6-4055-bb72-2322d16b6eef",
+                    "leftValue": "={{ $('On form submission').item.json['Preferred Contact'] }}",
+                    "rightValue": "Email",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Gmail"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.4,
+      "position": [
+        1344,
+        -192
+      ],
+      "id": "cb6d6459-f573-43a5-acad-1da715485a97",
+      "name": "Switch"
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $('Edit Fields').item.json.Gmail }}",
+        "subject": "ZAKI FOR CARS - Customer Request Confirmation",
+        "emailType": "text",
+        "message": "={{ JSON.parse($('AI Agent').item.json.output.replace(/```json|```/g, '')).customer_message }}",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        1680,
+        -32
+      ],
+      "id": "b3535b66-bd45-4d2b-b938-ddaf2b5ec3b3",
+      "name": "Send a message",
+      "webhookId": "d5f60bc7-9a14-4d32-bd51-4acdcc894b69",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "zSPteDI7ekczchjl",
+          "name": "Gmail account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1wKkuG1Tq4zkv2FlvXEyVPxioNLHizaVC-46X8GOnhTA",
+          "mode": "list",
+          "cachedResultName": "zaki",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1wKkuG1Tq4zkv2FlvXEyVPxioNLHizaVC-46X8GOnhTA/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "الورقة1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1wKkuG1Tq4zkv2FlvXEyVPxioNLHizaVC-46X8GOnhTA/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Name": "={{ $('Edit Fields').item.json['your name'] }}",
+            "Phone": "={{ $('Edit Fields').item.json['Phone Number'] }}",
+            "Request Type": "={{ $('Edit Fields').item.json['Request Type'] }}",
+            "Email": "={{ $('Edit Fields').item.json.Gmail }}",
+            "Car Type": "={{ $('Edit Fields').item.json['Preferred Car Type'] }}",
+            "Budget": "={{ $('Edit Fields').item.json['Budget Range:'] }}",
+            "Customer Message": "={{ $('On form submission').item.json['Additional Notes'] }}",
+            "Contact": "={{ $('Edit Fields').item.json['Preferred Contact '] }}",
+            "leadCategory": "={{ $json.leadCategory }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Name",
+              "displayName": "Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Phone",
+              "displayName": "Phone",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Email",
+              "displayName": "Email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Request Type",
+              "displayName": "Request Type",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Car Type",
+              "displayName": "Car Type",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Budget",
+              "displayName": "Budget",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Customer Message",
+              "displayName": "Customer Message",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Contact",
+              "displayName": "Contact",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "leadCategory",
+              "displayName": "leadCategory",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        1088,
+        -192
+      ],
+      "id": "4b6cd1df-caa7-4599-84fc-a293507da76d",
+      "name": "Append row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "sTlTafb0LkoQC7Wf",
+          "name": "Google Sheets account 6"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "send",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.whatsApp",
+      "typeVersion": 1.1,
+      "position": [
+        1680,
+        -304
+      ],
+      "id": "08c70404-b083-4034-8e52-0972e43905fd",
+      "name": "Send message",
+      "webhookId": "77ae51b8-1044-41cf-8eb2-3909fcef9690"
+    },
+    {
+      "parameters": {
+        "updates": [
+          "message"
+        ],
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.5,
+      "position": [
+        -32,
+        224
+      ],
+      "id": "a2d6b34a-23bd-4ada-a4d5-25f10e282d32",
+      "name": "Telegram Trigger",
+      "webhookId": "87f31339-f1f2-4eb6-afa2-1dc206fb9aed",
+      "credentials": {
+        "telegramApi": {
+          "id": "KuGV1nJZ5nFGMaJk",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Customer message: {{ $json.message.text }}\n\nCustomer Telegram Chat ID: {{ $json.message.chat.id }}\n\nAnalyze the customer's message and respond helpfully.\n\nIf the customer is asking about available cars, prices, models, brands, or types → use the get_available_cars tool to check the inventory before answering.\n\nRespond in the same language the customer used (Arabic or English).",
+        "hasOutputParser": true,
+        "options": {
+          "systemMessage": "You are a professional and friendly sales assistant for ZAKI FOR CARS on Telegram.\n\nYour responsibilities:\n- Answer customer questions politely and clearly.\n- When the customer asks about cars, prices, models, brands, or availability → always use the get_available_cars tool first before answering.\n- Only recommend cars that exist in the inventory.\n- If no matching car is found, politely inform the customer and offer to connect them with a sales representative.\n- Keep your answers concise and helpful.\n- Reply in the same language the customer used (Arabic or English).\n- Do not invent cars, prices, or availability.\n- Do not make promises about discounts or delivery unless the information exists in the inventory.\n\nTone:\n- Professional but friendly\n- Clear and direct\n- Helpful"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        384,
+        224
+      ],
+      "id": "c3a8e1b5-05bf-42af-b954-daffa882cd59",
+      "name": "AI Agent1"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1.1,
+      "position": [
+        192,
+        496
+      ],
+      "id": "c9815f2d-0846-4e6a-93d4-c260cb6cc726",
+      "name": "Google Gemini Chat Model1",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "hTytwTiAjdmZlEkf",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger').item.json.message.chat.id }}",
+        "text": "={{ $json.output }}",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        896,
+        224
+      ],
+      "id": "e6c8b13a-2ba4-4df1-a7e1-22aa5591ae2b",
+      "name": "Send a text message",
+      "webhookId": "b0940d5a-ff7a-42e0-944a-29d08d7ca0ad",
+      "credentials": {
+        "telegramApi": {
+          "id": "KuGV1nJZ5nFGMaJk",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "15c5Rix0FMSETR5oN-5XLMO2M2pmOpdmlUPpKAyoh2gQ",
+          "mode": "list",
+          "cachedResultName": "zaki cars ",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/15c5Rix0FMSETR5oN-5XLMO2M2pmOpdmlUPpKAyoh2gQ/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "الورقة1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/15c5Rix0FMSETR5oN-5XLMO2M2pmOpdmlUPpKAyoh2gQ/edit#gid=0"
+        },
+        "combineFilters": "OR",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheetsTool",
+      "typeVersion": 4.7,
+      "position": [
+        736,
+        496
+      ],
+      "id": "7032f465-b6ea-47fe-940c-b6175e5476e5",
+      "name": "Get row(s) in sheet in Google Sheets",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "sTlTafb0LkoQC7Wf",
+          "name": "Google Sheets account 6"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $json.message.chat.id }}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.4,
+      "position": [
+        432,
+        512
+      ],
+      "id": "2ccbb0b1-adaf-4034-ab3c-0c819ddedd26",
+      "name": "Simple Memory"
+    },
+    {
+      "parameters": {
+        "jsCode": "let rawText = $input.first().json.output;\n\nlet cleanJsonText = rawText.replace(/```json/g, '').replace(/```/g, '').trim();\n\nreturn JSON.parse(cleanJsonText);"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        816,
+        -192
+      ],
+      "id": "8c4405cf-a2ab-4409-9ec0-ffd6b6264953",
+      "name": "Code in JavaScript"
+    }
+  ],
+  "connections": {
+    "On form submission": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "Send message",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Append row in sheet": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send a message": {
+      "main": [
+        []
+      ]
+    },
+    "Telegram Trigger": {
+      "main": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent1": {
+      "main": [
+        [
+          {
+            "node": "Send a text message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s) in sheet in Google Sheets": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Append row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "staticData": null,
+  "pinData": {},
+  "triggerCount": 0,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  }
+}
