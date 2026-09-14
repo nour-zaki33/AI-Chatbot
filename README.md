@@ -1,4 +1,4 @@
-# 🚗 AI Car Dealership Lead Generation & Chatbot
+# AI Car Dealership Lead Generation & Chatbot
 
 > An AI-powered sales automation system built with **n8n** to capture, manage, and follow up with car dealership leads.
 
